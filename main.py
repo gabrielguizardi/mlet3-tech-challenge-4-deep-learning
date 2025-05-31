@@ -1,14 +1,13 @@
 from fastapi import FastAPI
-import json
-from pathlib import Path
 from dotenv import load_dotenv
 
 from sklearn.preprocessing import MinMaxScaler
 
 from schemas.fetch_data import FetchDataRequest
 from schemas.train import TrainModelRequest
-from schemas.predict import PredictRequest
 
+from services.predict.predict_service import PredictService
+from services.predict.prepare_data_service import PredictPrepareDataService
 from services.yfinance_service import YFinanceService
 from services.preprocess_data_service import PreprocessDataService
 
@@ -17,8 +16,9 @@ from services.train.train_service import TrainService
 from services.train.evaluate_service import TrainEvaluateService
 
 from services.s3.upload_service import S3UploadService
+from services.s3.download_service import S3DownloadService
 
-from error_handlers import http_exception_handler, validation_exception_handler, generic_exception_handler, value_error_handler
+from error_handlers import http_exception_handler, validation_exception_handler, generic_exception_handler, value_error_handler, file_not_found_error_handler
 from fastapi.exceptions import RequestValidationError
 from fastapi import HTTPException
 
@@ -29,10 +29,11 @@ app = FastAPI()
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(ValueError, value_error_handler)
+app.add_exception_handler(FileNotFoundError, file_not_found_error_handler)
 app.add_exception_handler(Exception, generic_exception_handler)
 
 @app.get("/up")
-def read_root():
+def up():
     return {
         "status": "ok"
     }
@@ -101,19 +102,28 @@ def train_model(request: TrainModelRequest):
     }
 
 @app.post("/models/{model_id}/predict")
-def predict(model_id: str, request: PredictRequest):
-    # Aqui você pode chamar a lógica de previsão, por exemplo:
-    # result = predict_your_model(model_id, request.days)
-    # return result
+def predict(model_id: str):
+    model, scaler, metadata = S3DownloadService(id=model_id).execute()
+
+    X_predict = PredictPrepareDataService(
+        metadata=metadata,
+        scaler=scaler
+    ).execute()
+
+    prediction = PredictService(model=model, X_predict=X_predict).execute()
+
     return {
-        "message": "Previsão realizada com sucesso",
-        "model_id": model_id,
-        "params": request.model_dump()
+        "prediction": prediction,
     }
 
 @app.post("/models/fetch-data")
 def fetch_stock_data(request: FetchDataRequest):
-    data = YFinanceService(ticker=request.ticker, start_date=request.start_date, end_date=request.end_date).execute()
+    data = YFinanceService(
+        ticker=request.ticker,
+        start_date=request.start_date,
+        end_date=request.end_date,
+        days=request.days
+    ).execute()
   
     return {
         "ticker": request.ticker,

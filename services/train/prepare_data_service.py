@@ -53,7 +53,6 @@ class TrainPrepareDataService:
         self.data = self.data.sort_values('Date').reset_index(drop=True)
         self.data = self.data.drop('Date', axis=1)
 
-
     def __create_target_column(self):
         self.data['target'] = self.data[self.target_column].shift(-1)
         self.data = self.data.dropna(subset=['target'])

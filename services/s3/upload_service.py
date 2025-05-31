@@ -2,22 +2,17 @@ import uuid
 import torch
 import os
 import pickle
-import boto3
 import json
 
-class S3UploadService:
+from services.s3.base_service import S3BaseService
+
+class S3UploadService(S3BaseService):
     def __init__(self, model, scaler, metadata: dict):
+        super().__init__()
         self.model = model
         self.scaler = scaler
         self.metadata = metadata
-        self.s3_client = boto3.client(
-            's3',
-            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-            aws_session_token=os.getenv('AWS_SESSION_TOKEN'),
-            region_name='us-east-1'
-        )
-        self.bucket_name = os.getenv('S3_BUCKET_NAME')
+       
 
     def execute(self):
         id = str(uuid.uuid4())
@@ -25,6 +20,8 @@ class S3UploadService:
 
         model_path, scaler_path, metadata_path = self.__save_files(train_path)
         model_s3_path, scaler_s3_path, metadata_s3_path = self.__upload_files(model_path, scaler_path, metadata_path, id)
+
+        self.__exclude_files(train_path)
 
         return id, model_s3_path, scaler_s3_path, metadata_s3_path
 
@@ -77,3 +74,12 @@ class S3UploadService:
         self.s3_client.upload_file(file_path, self.bucket_name, s3_key)
 
         return f"s3://{self.bucket_name}/{s3_key}"
+
+    def __exclude_files(self, train_path):
+        if os.path.exists(train_path):
+            for root, dirs, files in os.walk(train_path, topdown=False):
+                for name in files:
+                    os.remove(os.path.join(root, name))
+                for name in dirs:
+                    os.rmdir(os.path.join(root, name))
+            os.rmdir(train_path)

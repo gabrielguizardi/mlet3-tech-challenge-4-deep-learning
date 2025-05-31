@@ -15,9 +15,6 @@ class PreprocessDataService:
         if self.data.empty:
             raise ValueError("DataFrame must not be empty.")
 
-        if len(self.data) <= 200:
-            raise ValueError("DataFrame must have more than 200 rows.")
-
     def __remove_nulls(self):
         self.data.dropna(inplace=True)
 
