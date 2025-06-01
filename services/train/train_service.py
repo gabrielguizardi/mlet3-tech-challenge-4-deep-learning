@@ -60,5 +60,5 @@ class TrainService:
         return train_loader, test_loader
 
     def __train_model(self, model, train_loader, test_loader):
-        trainer = L.Trainer(max_epochs=self.epochs, log_every_n_steps=10, enable_progress_bar=True, enable_checkpointing=True)
+        trainer = L.Trainer(max_epochs=self.epochs, log_every_n_steps=10, enable_progress_bar=True, enable_checkpointing=False, logger=False)
         trainer.fit(model, train_loader, test_loader)

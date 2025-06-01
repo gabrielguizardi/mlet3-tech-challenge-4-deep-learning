@@ -26,7 +26,7 @@ class S3UploadService(S3BaseService):
         return id, model_s3_path, scaler_s3_path, metadata_s3_path
 
     def __train_path(self, id):
-        return f"models/repository/{id}"
+        return f"/tmp/models/repository/{id}"
     
     def __save_files(self, train_path):
         os.makedirs(train_path, exist_ok=True)

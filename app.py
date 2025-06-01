@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from mangum import Mangum
 from dotenv import load_dotenv
 
 from sklearn.preprocessing import MinMaxScaler
@@ -25,6 +26,8 @@ from fastapi import HTTPException
 load_dotenv()
 
 app = FastAPI()
+
+handler = Mangum(app)
 
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
@@ -129,3 +132,4 @@ def fetch_stock_data(request: FetchDataRequest):
         "ticker": request.ticker,
         "data": data.to_dict(orient="records")
     }
+
