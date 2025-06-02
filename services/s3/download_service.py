@@ -7,7 +7,26 @@ from services.s3.base_service import S3BaseService
 
 
 class S3DownloadService(S3BaseService):
+    """
+    Service class for downloading trained models and associated files from AWS S3.
+
+    This service handles the retrieval of trained models, scalers, and metadata from S3
+    using a model ID. It manages the downloading and instantiation of all model components.
+
+    Attributes:
+        id (str): The unique identifier of the model to download.
+
+    Raises:
+        FileNotFoundError: If the model files are not found in S3.
+    """
+
     def __init__(self, id):
+        """
+        Initialize the S3DownloadService.
+
+        Args:
+            id (str): The unique identifier of the model to download.
+        """
         super().__init__()
         self.id = id
     

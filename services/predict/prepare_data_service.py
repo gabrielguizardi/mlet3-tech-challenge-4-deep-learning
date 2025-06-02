@@ -2,7 +2,30 @@ from services.preprocess_data_service import PreprocessDataService
 from services.yfinance_service import YFinanceService
 
 class PredictPrepareDataService:
+    """
+    Service class for preparing data for model prediction.
+
+    This class handles the preparation of new data for making predictions using a trained model,
+    including data fetching, preprocessing, and sequence creation.
+
+    Attributes:
+        metadata (dict): Model metadata containing configuration information.
+        scaler: Fitted scaler for feature normalization.
+        sequence_length (int): Length of sequences for LSTM input.
+        ticker (str): Stock ticker symbol.
+
+    Raises:
+        ValueError: If the input data is insufficient for sequence creation.
+    """
+
     def __init__(self, metadata: dict, scaler: None):
+        """
+        Initialize the PredictPrepareDataService.
+
+        Args:
+            metadata (dict): Model metadata containing configuration information.
+            scaler: Fitted scaler for feature normalization.
+        """
         self.metadata = metadata
         self.scaler = scaler
         self.sequence_length = metadata['request']['sequence_length']

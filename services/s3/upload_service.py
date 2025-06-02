@@ -7,7 +7,27 @@ import json
 from services.s3.base_service import S3BaseService
 
 class S3UploadService(S3BaseService):
+    """
+    Service class for uploading trained models and associated files to AWS S3.
+
+    This service handles the upload of trained models, scalers, and metadata to S3.
+    It creates a unique ID for each model and manages the storage structure in S3.
+
+    Attributes:
+        model: The trained model to upload.
+        scaler: The fitted scaler used for data preprocessing.
+        metadata (dict): Additional metadata about the model and training process.
+    """
+
     def __init__(self, model, scaler, metadata: dict):
+        """
+        Initialize the S3UploadService.
+
+        Args:
+            model: The trained model to upload.
+            scaler: The fitted scaler used for data preprocessing.
+            metadata (dict): Additional metadata about the model and training process.
+        """
         super().__init__()
         self.model = model
         self.scaler = scaler

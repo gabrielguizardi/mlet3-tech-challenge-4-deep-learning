@@ -1,7 +1,26 @@
 import pandas as pd
  
 class PreprocessDataService:
+    """
+    A service class for preprocessing stock market data.
+
+    This class handles basic data preprocessing tasks such as removing null values
+    and selecting relevant columns from the input DataFrame.
+
+    Attributes:
+        data (pd.DataFrame): The input DataFrame containing stock market data.
+
+    Raises:
+        ValueError: If the input DataFrame is empty.
+    """
+
     def __init__(self, data: pd.DataFrame):
+        """
+        Initialize the PreprocessDataService.
+
+        Args:
+            data (pd.DataFrame): The input DataFrame to preprocess.
+        """
         self.data = data
 
     def execute(self):
@@ -23,5 +42,4 @@ class PreprocessDataService:
     def __select_columns(self):
         columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
 
-        self.data = self.data[columns]   
-        
+        self.data = self.data[columns]

@@ -6,7 +6,37 @@ from pytorch_lightning.callbacks import EarlyStopping
 from models.lightning_lstm_model import LightningLSTM
 
 class TrainService:
+    """
+    A service class for training LSTM models using PyTorch Lightning.
+
+    This service handles the training process of LSTM models, including data validation,
+    dataloader creation, and model training with early stopping.
+
+    Attributes:
+        X_train (np.ndarray): Training features.
+        y_train (np.ndarray): Training target values.
+        X_test (np.ndarray): Testing features.
+        y_test (np.ndarray): Testing target values.
+        epochs (int): Number of training epochs.
+        patience (int): Number of epochs to wait before early stopping.
+        features (int): Number of input features.
+
+    Raises:
+        ValueError: If training data is invalid or epochs parameter is incorrect.
+    """
+
     def __init__(self, X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, epochs: int = 10, patience: int = 10):
+        """
+        Initialize the TrainService.
+
+        Args:
+            X_train (np.ndarray): Training features.
+            y_train (np.ndarray): Training target values.
+            X_test (np.ndarray): Testing features.
+            y_test (np.ndarray): Testing target values.
+            epochs (int): Number of training epochs (default: 10).
+            patience (int): Number of epochs to wait before early stopping (default: 10).
+        """
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test

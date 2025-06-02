@@ -5,7 +5,34 @@ import torch
 pd.options.mode.copy_on_write = True
 
 class TrainPrepareDataService:
+    """
+    Service class for preparing data for model training.
+
+    This class handles the preparation of time series data for training, including
+    data validation, scaling, sequence creation, and train-test splitting.
+
+    Attributes:
+        data (pd.DataFrame): Input DataFrame containing the time series data.
+        train_size (float): Proportion of data to use for training (0-1).
+        sequence_length (int): Length of sequences for LSTM input.
+        scaler: Scaler instance for feature normalization.
+        target_column (str): Name of the target column to predict.
+
+    Raises:
+        ValueError: If input data validation fails or parameters are invalid.
+    """
+
     def __init__(self, data: pd.DataFrame, train_size: float = 0.8, sequence_length: int = 1, scaler=None, target_column: str = 'Close'):
+        """
+        Initialize the TrainPrepareDataService.
+
+        Args:
+            data (pd.DataFrame): Input DataFrame containing the time series data.
+            train_size (float): Proportion of data to use for training (default: 0.8).
+            sequence_length (int): Length of sequences for LSTM input (default: 1).
+            scaler: Scaler instance for feature normalization (default: None).
+            target_column (str): Name of the target column to predict (default: 'Close').
+        """
         self.data = data
         self.train_size = train_size
         self.sequence_length = sequence_length

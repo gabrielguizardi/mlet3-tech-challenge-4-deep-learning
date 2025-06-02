@@ -3,7 +3,31 @@ import torch
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error, r2_score, mean_absolute_percentage_error
 
 class TrainEvaluateService:
+    """
+    A service class for evaluating trained models using various metrics.
+
+    This service calculates multiple evaluation metrics for both training and testing datasets,
+    including MAE, MAPE, RMSE, and R² scores.
+
+    Attributes:
+        model: The trained model to evaluate.
+        X_train (np.ndarray): Training features.
+        y_train (np.ndarray): Training target values.
+        X_test (np.ndarray): Testing features.
+        y_test (np.ndarray): Testing target values.
+    """
+
     def __init__(self, model, X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray):
+        """
+        Initialize the TrainEvaluateService.
+
+        Args:
+            model: The trained model to evaluate.
+            X_train (np.ndarray): Training features.
+            y_train (np.ndarray): Training target values.
+            X_test (np.ndarray): Testing features.
+            y_test (np.ndarray): Testing target values.
+        """
         self.model = model
         self.X_train = X_train
         self.y_train = y_train

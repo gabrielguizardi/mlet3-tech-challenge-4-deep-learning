@@ -1,19 +1,33 @@
-"""
-Serviço para obter e processar dados históricos de ações usando a biblioteca yfinance.
-
-Classes:
-    YFinanceService: Classe responsável por buscar e processar dados de ações de um ticker específico em um intervalo de datas.
-
-Exemplo de uso:
-    service = YFinanceService('AAPL', '2022-01-01', '2022-12-31')
-    resultado = service.execute()
-"""
-
 import yfinance as yf
 import pandas as pd
 
 class YFinanceService:
+    """
+    A service class for fetching and processing historical stock data using yfinance.
+
+    This class provides functionality to retrieve historical stock data for a specified ticker
+    symbol within a given date range or for a specific number of days.
+
+    Attributes:
+        ticker (str): The stock ticker symbol.
+        start_date (str): The start date for data retrieval (optional).
+        end_date (str): The end date for data retrieval (optional).
+        days (int): Number of days of historical data to retrieve (optional).
+
+    Raises:
+        ValueError: If neither date range nor days are provided, or if dates are invalid.
+    """
+
     def __init__(self, ticker: str, start_date: str = None, end_date: str = None, days: int = None):
+        """
+        Initialize the YFinanceService.
+
+        Args:
+            ticker (str): The stock ticker symbol.
+            start_date (str, optional): Start date in 'YYYY-MM-DD' format.
+            end_date (str, optional): End date in 'YYYY-MM-DD' format.
+            days (int, optional): Number of days of historical data to retrieve.
+        """
         self.ticker = ticker
         self.start_date = start_date
         self.end_date = end_date
