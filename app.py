@@ -64,7 +64,8 @@ def train_model(request: TrainModelRequest):
         y_train=y_train,
         X_test=X_test,
         y_test=y_test,
-        epochs=request.epochs
+        epochs=request.epochs,
+        patience=request.patience
     ).execute()
 
     train_metrics, test_metrics = TrainEvaluateService(

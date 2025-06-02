@@ -8,3 +8,4 @@ class TrainModelRequest(BaseModel):
     sequence_length: int
     target_column: str
     epochs: int
+    patience: int

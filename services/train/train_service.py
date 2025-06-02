@@ -1,16 +1,18 @@
 import numpy as np
 import pytorch_lightning as L
 from torch.utils.data import TensorDataset, DataLoader
+from pytorch_lightning.callbacks import EarlyStopping
 
 from models.lightning_lstm_model import LightningLSTM
 
 class TrainService:
-    def __init__(self, X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, epochs: int = 10):
+    def __init__(self, X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, epochs: int = 10, patience: int = 10):
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test
         self.y_test = y_test
         self.epochs = epochs
+        self.patience = patience
         self.features = X_train.shape[2] if len(X_train.shape) > 1 else 1
 
     def execute(self):
@@ -60,5 +62,19 @@ class TrainService:
         return train_loader, test_loader
 
     def __train_model(self, model, train_loader, test_loader):
-        trainer = L.Trainer(max_epochs=self.epochs, log_every_n_steps=10, enable_progress_bar=True, enable_checkpointing=False, logger=False)
+        early_stop_callback = EarlyStopping(
+            monitor='val_loss',
+            min_delta=0.0,
+            patience=self.patience,
+            verbose=True,
+            mode='min'
+        )
+        trainer = L.Trainer(
+            max_epochs=self.epochs,
+            log_every_n_steps=10,
+            enable_progress_bar=True,
+            enable_checkpointing=False,
+            logger=False,
+            callbacks=[early_stop_callback]
+        )
         trainer.fit(model, train_loader, test_loader)
